@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import NavigationButton from "../NavigationButton";
+import NavigationLink from "../NavigationLink";
 
 const Layout = styled.div`
   display: flex;
@@ -13,28 +14,25 @@ const Link = styled.a`
   text-decoration: none;
   padding: 12px 16px;
 `;
-const Logo = styled.span`
-  color: #008fb4;
-`;
-const Text = styled.span`
-  color: #545a77;
-`;
+
 const Navigation = () => (
   <Layout>
     <Link href="/">
-      <Logo>Logo</Logo>
+      <NavigationLink>Logo</NavigationLink>
     </Link>
     <Divider />
-    <NavigationButton href="/post-a-task">Post a Task</NavigationButton>
-    <Link href="/categories">
-      <Text>Categories</Text>
-    </Link>
-    <Link href="/browser-task">
-      <Text>Browse Tasks</Text>
-    </Link>
-    <Link href="/how-it-work">
-      <Text>How it Works</Text>
-    </Link>
+    <NavigationLink variant="button" href="/post-a-task">
+      Post a Task
+    </NavigationLink>
+    <NavigationLink variant="text" href="/categories">
+      Categories
+    </NavigationLink>
+    <NavigationLink variant="text" href="/browser-task">
+      Browse Tasks
+    </NavigationLink>
+    <NavigationLink variant="text" href="/how-it-work">
+      How it Works
+    </NavigationLink>
   </Layout>
 );
 export default Navigation;
