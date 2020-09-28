@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Authentication from "./components/Authentication";
-import Navigation from "./components/Navigation";
+import Authentication from "./components/Private";
+import Navigation from "./components/Public";
 
 const StyledHeader = styled.div`
   border-bottom: 1px solid #dadadd;
