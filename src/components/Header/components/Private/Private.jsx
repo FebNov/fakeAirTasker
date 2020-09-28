@@ -3,6 +3,7 @@ import styled from "styled-components";
 import NavigationLink from "../NavigationLink";
 import NavigationButton from "../NavigationButton";
 import SignInModal from "./components/SigninModal";
+import SignUpModal from "./components/SignUpModal";
 const Layout = styled.div`
   display: flex;
 `;
@@ -50,7 +51,12 @@ class Private extends React.Component {
             onSignUp={this.showModal(MODAL.signUp)}
           />
         )}
-        {showModal === MODAL.signUp && <div>SIGn Up</div>}
+        {showModal === MODAL.signUp && (
+          <SignUpModal
+            onClose={this.showModal(MODAL.empty)}
+            onSignIn={this.showModal(MODAL.signIn)}
+          />
+        )}
       </>
     );
   }
