@@ -18,9 +18,15 @@ const Public = () => (
     <NavigationLink.Button variant="primary" href="/post-a-task">
       Post a Task
     </NavigationLink.Button>
-    <NavigationLink.Text href="/categories">Categories</NavigationLink.Text>
-    <NavigationLink.Text href="/browser-task">Browse Tasks</NavigationLink.Text>
-    <NavigationLink.Text href="/how-it-work">How it Works</NavigationLink.Text>
+    <NavigationLink.Text indictable href="/categories">
+      Categories
+    </NavigationLink.Text>
+    <NavigationLink.Text indictable href="/browser-task">
+      Browse Tasks
+    </NavigationLink.Text>
+    <NavigationLink.Text indictable href="/how-it-work">
+      How it Works
+    </NavigationLink.Text>
   </Layout>
 );
 export default Public;
