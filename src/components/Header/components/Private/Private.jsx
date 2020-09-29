@@ -35,12 +35,12 @@ class Private extends React.Component {
     return (
       <>
         <Layout>
-          <NavigationButton onClick={this.showModal(MODAL.signIn)}>
+          <NavigationButton.Text onClick={this.showModal(MODAL.signIn)}>
             Sign In
-          </NavigationButton>
-          <NavigationButton onClick={this.showModal(MODAL.signUp)}>
+          </NavigationButton.Text>
+          <NavigationButton.Text onClick={this.showModal(MODAL.signUp)}>
             Sign Up
-          </NavigationButton>
+          </NavigationButton.Text>
           <NavigationLink.Button variant="secondary" href="/enroll">
             Bacome a Tasker
           </NavigationLink.Button>

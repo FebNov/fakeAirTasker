@@ -36,18 +36,20 @@ NavigationLink.Naked = Link;
 
 NavigationLink.Text = styled(Link)`
   color: #545a77;
-  &::hover {
+  &:hover {
     color: #008fb4;
   }
 `;
 
 NavigationLink.Button = styled(Link)`
+  outline: 0;
+  border: 0;
   background: #e0446d;
   border-radius: 200px;
   font-size: 14px;
   margin: 8px 16px;
   padding: 8px 18px;
-  color: white;
+  /* color: white; */
   ${(props) => {
     const style = {
       primary: css`
