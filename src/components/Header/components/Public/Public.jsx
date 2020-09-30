@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import NavigationButton from "../NavigationButton";
-
+import ToggleContent from "../../../ToggleContent";
 import NavigationLink from "../NavigationLink";
 import PostTaskerModal from "./components/PostModal";
 import DropDownList from "./components/DropDown";
@@ -14,50 +14,29 @@ const Divider = styled.div`
   border-right: 1px solid #dadada;
 `;
 
-class Public extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showPostModal: false,
-    };
-    this.togglePostModal = this.togglePostModal.bind(this);
-  }
-  togglePostModal(event) {
-    event.preventDefault();
-
-    this.setState((prevState) => ({
-      showPostModal: !prevState.showPostModal,
-    }));
-  }
-
-
-  render() {
-    const { showPostModal } = this.state;
-    return (
-      <Layout>
-        <NavigationLink.Naked href="/">Logo</NavigationLink.Naked>
-        <Divider />
+const Public = () => (
+  <Layout>
+    <NavigationLink.Naked href="/">Logo</NavigationLink.Naked>
+    <Divider />
+    <ToggleContent
+      toggle={(toggle) => (
         <NavigationButton.Button
           variant="primary"
           href="/post-a-task"
-          onClick={this.togglePostModal}
+          onClick={toggle}
         >
           Post a Task
         </NavigationButton.Button>
-        {showPostModal && (
-          <PostTaskerModal onClose={this.togglePostModal}></PostTaskerModal>
-        )}
-
-        <DropDownList />
-        <NavigationLink.Text indictable href="/browser-task">
-          Browse Tasks
-        </NavigationLink.Text>
-        <NavigationLink.Text indictable href="/how-it-work">
-          How it Works
-        </NavigationLink.Text>
-      </Layout>
-    );
-  }
-}
-
+      )}
+      content={(toggle) => <PostTaskerModal onClose={toggle} />}
+    />
+    <DropDownList />
+    <NavigationLink.Text indictable href="/browser-task">
+      Browse Tasks
+    </NavigationLink.Text>
+    <NavigationLink.Text indictable href="/how-it-work">
+      How it Works
+    </NavigationLink.Text>
+  </Layout>
+);
 export default Public;
