@@ -4,10 +4,11 @@ import NavigationButton from "../NavigationButton";
 
 import NavigationLink from "../NavigationLink";
 import PostTaskerModal from "./components/PostModal";
-
+import DropDownList from "./components/DropDown";
 const Layout = styled.div`
   display: flex;
 `;
+
 const Divider = styled.div`
   width: 1px;
   border-right: 1px solid #dadada;
@@ -25,9 +26,11 @@ class Public extends React.Component {
     event.preventDefault();
 
     this.setState((prevState) => ({
-      showPostMadel: !prevState.showPostMadel,
+      showPostModal: !prevState.showPostModal,
     }));
   }
+
+
   render() {
     const { showPostModal } = this.state;
     return (
@@ -41,10 +44,11 @@ class Public extends React.Component {
         >
           Post a Task
         </NavigationButton.Button>
-        {showPostModal && <PostTaskerModal onClose={this.togglePostModal} />}
-        <NavigationLink.Text indictable href="/categories">
-          Categories
-        </NavigationLink.Text>
+        {showPostModal && (
+          <PostTaskerModal onClose={this.togglePostModal}></PostTaskerModal>
+        )}
+
+        <DropDownList />
         <NavigationLink.Text indictable href="/browser-task">
           Browse Tasks
         </NavigationLink.Text>
