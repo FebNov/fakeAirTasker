@@ -11,7 +11,7 @@ const Form = styled.form`
   padding: 16px 0;
 `;
 
-const EMAIL_REGEXP = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const EMAIL_REGEXP = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 const FORM = {
   email: {
@@ -65,24 +65,50 @@ class SignUpModal extends React.Component {
 
     this.state = {
       formData: {
-        email: "",
-        password: "",
-        confirmpassword: "",
+        email: {
+          value: "",
+          touched: false,
+        },
+        password: {
+          value: "",
+          touched: false,
+        },
+        confirmPassword: {
+          value: "",
+          touched: false,
+        },
       },
     };
+
     this.handleFormDataChange = this.handleFormDataChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
+  getErrorMessage(target) {
+    const { formData } = this.state;
+    const data = Object.keys(formData).reduce(
+      (obj, key) => ({
+        ...obj,
+        [key]: formData[key].value,
+      }),
+      {}
+    );
+
+    return FORM[target].getErrorMessage(formData[target].value, data);
+  }
+
   handleFormDataChange(target) {
     return (event) => {
-      const { value } = event.target;
       event.preventDefault();
+      const { value } = event.target;
 
       this.setState((prevState) => ({
-        forData: {
+        formData: {
           ...prevState.formData,
-          [target]: value,
+          [target]: {
+            value,
+            touched: true,
+          },
         },
       }));
     };
@@ -90,39 +116,79 @@ class SignUpModal extends React.Component {
 
   handleFormSubmit(event) {
     const { formData } = this.state;
+
     event.preventDefault();
-    console.log(formData);
+
+    if (!this.isFormValid()) {
+      console.log("There are validation errors");
+
+      return;
+    }
+
+    console.log("Sign up...", formData);
+  }
+  isFormValid() {
+    const { formData } = this.state;
+
+    const errorMessages = Object.keys(formData)
+      .map((key) => {
+        const errorMessage = this.getErrorMessage(key);
+
+        return errorMessage;
+      })
+      .filter((v) => !!v);
+
+    return !errorMessages.length;
   }
 
   render() {
     const { formData } = this.state;
     const { onClose, onSignIn } = this.props;
+
     return (
       <Modal onClose={onClose}>
-        <Modal.Header>Sign-Up</Modal.Header>
+        <Modal.Header>Sign Up</Modal.Header>
         <Modal.Body>
           <Form onSubmit={this.handleFormSubmit}>
-            {FORM.map(({ key, label, type, getErrorMessage }) => (
-              <FormItem key={key} htmlFor={key} label={label}>
-                <Input
-                  onChange={this.handleFormDataChange(key)}
-                  id={key}
-                  type={type}
-                />
-                {getErrorMessage(formData[key])}
-              </FormItem>
-            ))}
+            {Object.keys(FORM).map((key) => {
+              const { label, type } = FORM[key];
+
+              const { value, touched } = formData[key];
+
+              const errorMessage = touched ? this.getErrorMessage(key) : "";
+
+              return (
+                <FormItem
+                  key={key}
+                  htmlFor={key}
+                  label={label}
+                  errorMessage={errorMessage}
+                >
+                  <Input
+                    id={key}
+                    type={type}
+                    error={errorMessage}
+                    value={value}
+                    onChange={this.handleFormDataChange(key)}
+                  />
+                </FormItem>
+              );
+            })}
             <FormItem>
-              <Button width="100%" variant="success">
-                Sign Up
+              <Button
+                disabled={!this.isFormValid()}
+                width="100%"
+                variant="success"
+              >
+                Sign up
               </Button>
             </FormItem>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          Already Member?&nbsp;
+          Already a member?&nbsp;
           <NakedButton variant="link" onClick={onSignIn}>
-            Sign-In
+            Sign in now
           </NakedButton>
         </Modal.Footer>
       </Modal>

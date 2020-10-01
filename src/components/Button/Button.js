@@ -3,7 +3,12 @@ import NakedButton from "../NakedButton";
 
 const Button = styled(NakedButton)`
   border-radius: 200px;
-
+  ${(props) =>
+    props.disabled &&
+    css`
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    `}
   ${(props) =>
     props.width &&
     css`
