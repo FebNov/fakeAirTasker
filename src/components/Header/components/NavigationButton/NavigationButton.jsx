@@ -4,7 +4,7 @@ import styled from "styled-components";
 import NavigationItem from "../NavigationItem";
 import NavigationLink from "../NavigationLink";
 import NakedButton from "../../../NakedButton";
-
+import Button from "../../../Button";
 const NavigationButton = {};
 
 NavigationButton.Text = ({
@@ -41,14 +41,23 @@ NavigationButton.Text.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-NavigationButton.Button = ({ onClick, children }) => (
-  <NavigationLink.Button as={NakedButton} onClick={onClick} variant="primary">
+const StyledButton = styled(Button)`
+  margin: 8px 16px;
+`;
+
+NavigationButton.Button = ({ onClick, children, variant, size }) => (
+  <StyledButton size="small" variant={variant} onClick={onClick}>
     {children}
-  </NavigationLink.Button>
+  </StyledButton>
 );
+
+NavigationButton.Button.defaultProps = {
+  variant: "primary",
+};
 NavigationButton.Button.propTypes = {
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
+  variant: PropTypes.oneOf(["primary", "secondary"]),
 };
 
 export default NavigationButton;
