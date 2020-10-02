@@ -59,11 +59,17 @@ const FORM = {
   },
 };
 
+const ERROR = {
+  409: "Email Existed",
+  500: "Something unexpect happen, try again later",
+};
+
 class SignUpModal extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      error: "",
       formData: {
         email: {
           value: "",
@@ -83,8 +89,7 @@ class SignUpModal extends React.Component {
     this.handleFormDataChange = this.handleFormDataChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
-
-  getErrorMessage(target) {
+  getData() {
     const { formData } = this.state;
     const data = Object.keys(formData).reduce(
       (obj, key) => ({
@@ -93,6 +98,11 @@ class SignUpModal extends React.Component {
       }),
       {}
     );
+    return data;
+  }
+  getErrorMessage(target) {
+    const { formData } = this.state;
+    const data = this.getData();
 
     return FORM[target].getErrorMessage(formData[target].value, data);
   }
@@ -115,7 +125,7 @@ class SignUpModal extends React.Component {
   }
 
   handleFormSubmit(event) {
-    const { formData } = this.state;
+    // const { formData } = this.state;
 
     event.preventDefault();
 
@@ -124,9 +134,36 @@ class SignUpModal extends React.Component {
 
       return;
     }
+    const data = this.getData();
 
-    console.log("Sign up...", formData);
+    fetch("http://localhost:3000/api/users", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.status !== 200) {
+          throw res;
+        }
+        return res.json();
+      })
+      .then(() => {
+        console.log("User Created");
+      })
+      .catch((error) => {
+        if (error.status === 409) {
+          this.setState({
+            error: "Email Existed",
+          });
+          return;
+        }
+
+        this.setState({ error: "Something unexpect happen, try again later" });
+      });
   }
+
   isFormValid() {
     const { formData } = this.state;
 
@@ -142,7 +179,7 @@ class SignUpModal extends React.Component {
   }
 
   render() {
-    const { formData } = this.state;
+    const { formData, error } = this.state;
     const { onClose, onSignIn } = this.props;
 
     return (
@@ -150,6 +187,7 @@ class SignUpModal extends React.Component {
         <Modal.Header>Sign Up</Modal.Header>
         <Modal.Body>
           <Form onSubmit={this.handleFormSubmit}>
+            {error}
             {Object.keys(FORM).map((key) => {
               const { label, type } = FORM[key];
 
