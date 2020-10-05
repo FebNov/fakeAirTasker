@@ -3,7 +3,6 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import NavigationLink from "../../../NavigationLink";
 import NakedButton from "../../../../../NakedButton";
-import NavigationItem from "../../../NavigationItem";
 
 const Menu = styled.div`
   position: absolute;
@@ -20,7 +19,7 @@ const DropDownWrapper = styled(NakedButton)`
   position: relative;
   cursor: initial;
 `;
-const CurosrWrapper = styled(NavigationItem)`
+const CurosrWrapper = styled.div`
   cursor: pointer;
 `;
 class DropDownList extends React.Component {
@@ -46,7 +45,9 @@ class DropDownList extends React.Component {
         onMouseLeave={this.toggleDropDown}
       >
         <CurosrWrapper indictable>
-          <NavigationLink.Text indictable>Categories</NavigationLink.Text>
+          <NavigationLink as="div" indictable>
+            Categories
+          </NavigationLink>
         </CurosrWrapper>
         {showDropDown && <Menu>DropDownList</Menu>}
       </DropDownWrapper>

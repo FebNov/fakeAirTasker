@@ -1,5 +1,5 @@
 import React from "react";
-
+import Alert from "../../../../../Alert";
 import PropTypes from "prop-types";
 import Modal from "../../../../../Modal";
 import NakedButton from "../../../../../NakedButton";
@@ -7,69 +7,19 @@ import styled from "styled-components";
 import Button from "../../../../../Button";
 import FormItem from "../../../../../FormItem";
 import Input from "../../../../../Input";
+import form from "./form";
+import signUp from "../../../../../../apis/signUp";
 const Form = styled.form`
   padding: 16px 0;
 `;
-
-const EMAIL_REGEXP = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
-const FORM = {
-  email: {
-    label: "Email",
-    type: "text",
-    getErrorMessage: (value) => {
-      if (!value) {
-        return "Please enter your email address";
-      }
-
-      if (!EMAIL_REGEXP.test(value)) {
-        return "Please enter a valid email address";
-      }
-
-      return "";
-    },
-  },
-  password: {
-    key: "password",
-    label: "Password",
-    type: "password",
-    getErrorMessage: (value) => {
-      if (!value) {
-        return "Please enter your password";
-      }
-
-      return "";
-    },
-  },
-  confirmPassword: {
-    key: "confirmPassword",
-    label: "Confirm password",
-    type: "password",
-    getErrorMessage: (value, data) => {
-      if (!value) {
-        return "Please enter your confirm password";
-      }
-
-      if (value !== data.password) {
-        return "Your confirm password does not match";
-      }
-
-      return "";
-    },
-  },
-};
-
-const ERROR = {
-  409: "Email Existed",
-  500: "Something unexpect happen, try again later",
-};
 
 class SignUpModal extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      error: "",
+      error: null,
+      loading: false,
       formData: {
         email: {
           value: "",
@@ -89,6 +39,7 @@ class SignUpModal extends React.Component {
     this.handleFormDataChange = this.handleFormDataChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
+
   getData() {
     const { formData } = this.state;
     const data = Object.keys(formData).reduce(
@@ -100,13 +51,13 @@ class SignUpModal extends React.Component {
     );
     return data;
   }
+
   getErrorMessage(target) {
     const { formData } = this.state;
     const data = this.getData();
 
-    return FORM[target].getErrorMessage(formData[target].value, data);
+    return form[target].getErrorMessage(formData[target].value, data);
   }
-
   handleFormDataChange(target) {
     return (event) => {
       event.preventDefault();
@@ -125,9 +76,13 @@ class SignUpModal extends React.Component {
   }
 
   handleFormSubmit(event) {
-    // const { formData } = this.state;
-
+    const { onClose, onSignUpSuccess } = this.props;
     event.preventDefault();
+
+    this.setState({
+      error: null,
+      loading: true,
+    });
 
     if (!this.isFormValid()) {
       console.log("There are validation errors");
@@ -136,21 +91,19 @@ class SignUpModal extends React.Component {
     }
     const data = this.getData();
 
-    fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "content-type": "application/json",
-      },
-    })
+    signUp(data)
       .then((res) => {
-        if (res.status !== 200) {
+        this.setState({
+          loading: false,
+        });
+        if (!res.ok) {
           throw res;
         }
         return res.json();
       })
-      .then(() => {
-        console.log("User Created");
+      .then((user) => {
+        onClose();
+        onSignUpSuccess(user);
       })
       .catch((error) => {
         if (error.status === 409) {
@@ -161,6 +114,7 @@ class SignUpModal extends React.Component {
         }
 
         this.setState({ error: "Something unexpect happen, try again later" });
+        throw error;
       });
   }
 
@@ -179,7 +133,7 @@ class SignUpModal extends React.Component {
   }
 
   render() {
-    const { formData, error } = this.state;
+    const { formData, error, loading } = this.state;
     const { onClose, onSignIn } = this.props;
 
     return (
@@ -187,9 +141,14 @@ class SignUpModal extends React.Component {
         <Modal.Header>Sign Up</Modal.Header>
         <Modal.Body>
           <Form onSubmit={this.handleFormSubmit}>
-            {error}
-            {Object.keys(FORM).map((key) => {
-              const { label, type } = FORM[key];
+            {error && (
+              <FormItem>
+                <Alert>{error}</Alert>
+              </FormItem>
+            )}
+
+            {Object.keys(form).map((key) => {
+              const { label, type } = form[key];
 
               const { value, touched } = formData[key];
 
@@ -214,11 +173,11 @@ class SignUpModal extends React.Component {
             })}
             <FormItem>
               <Button
-                disabled={!this.isFormValid()}
+                disabled={!this.isFormValid() || loading}
                 width="100%"
                 variant="success"
               >
-                Sign up
+                {loading ? "loading" : "Sign up"}
               </Button>
             </FormItem>
           </Form>
@@ -235,6 +194,7 @@ class SignUpModal extends React.Component {
 }
 
 SignUpModal.propType = {
+  onSignUpSuccess: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSignIn: PropTypes.func.isRequired,
 };

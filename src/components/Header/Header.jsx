@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Authentication from "./components/Private";
-import Navigation from "./components/Public";
+import Private from "./components/Private";
+import Public from "./components/Public";
 
 const StyledHeader = styled.div`
   border-bottom: 1px solid #dadadd;
@@ -18,15 +18,15 @@ const Right = styled.div`
   margin-left: auto;
 `;
 
-const Header = () => (
+const Header = ({ changePage }) => (
   <StyledHeader>
     <Container>
       <Layout>
         <Left>
-          <Navigation />
+          <Public />
         </Left>
         <Right>
-          <Authentication />
+          <Private changePage={changePage} />
         </Right>
       </Layout>
     </Container>
