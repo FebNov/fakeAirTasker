@@ -18,7 +18,7 @@ const Right = styled.div`
   margin-left: auto;
 `;
 
-const Header = ({ changePage }) => (
+const Header = () => (
   <StyledHeader>
     <Container>
       <Layout>
@@ -26,7 +26,7 @@ const Header = ({ changePage }) => (
           <Public />
         </Left>
         <Right>
-          <Private changePage={changePage} />
+          <Private  />
         </Right>
       </Layout>
     </Container>

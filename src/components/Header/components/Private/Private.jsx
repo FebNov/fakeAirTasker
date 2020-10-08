@@ -6,6 +6,7 @@ import SignInModal from "./components/SigninModal";
 import SignUpModal from "./components/SignUpModal";
 import Link from "../../../Link";
 import NakedButton from "../../../NakedButton";
+import { RouterContext } from "../../../Router";
 
 const Layout = styled.div`
   display: flex;
@@ -42,7 +43,6 @@ class Private extends React.Component {
   }
 
   render() {
-    const { changePage } = this.props;
     const { showModal, user } = this.state;
     return (
       <>
@@ -68,7 +68,6 @@ class Private extends React.Component {
                   onClose={this.showModal(MODAL.empty)}
                   onSignUp={this.showModal(MODAL.signUp)}
                   onSignInSuccess={this.setUser}
-                  changePage={changePage}
                 />
               )}
               {showModal === MODAL.signUp && (

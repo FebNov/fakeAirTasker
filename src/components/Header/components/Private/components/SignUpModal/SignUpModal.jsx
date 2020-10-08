@@ -9,6 +9,8 @@ import FormItem from "../../../../../FormItem";
 import Input from "../../../../../Input";
 import form from "./form";
 import signUp from "../../../../../../apis/signUp";
+import { withRouter } from "../../../../../Router";
+import withForm from "../../../../../withForm";
 const Form = styled.form`
   padding: 16px 0;
 `;
@@ -20,63 +22,19 @@ class SignUpModal extends React.Component {
     this.state = {
       error: null,
       loading: false,
-      formData: {
-        email: {
-          value: "",
-          touched: false,
-        },
-        password: {
-          value: "",
-          touched: false,
-        },
-        confirmPassword: {
-          value: "",
-          touched: false,
-        },
-      },
     };
 
-    this.handleFormDataChange = this.handleFormDataChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
-  getData() {
-    const { formData } = this.state;
-    const data = Object.keys(formData).reduce(
-      (obj, key) => ({
-        ...obj,
-        [key]: formData[key].value,
-      }),
-      {}
-    );
-    return data;
-  }
-
-  getErrorMessage(target) {
-    const { formData } = this.state;
-    const data = this.getData();
-
-    return form[target].getErrorMessage(formData[target].value, data);
-  }
-  handleFormDataChange(target) {
-    return (event) => {
-      event.preventDefault();
-      const { value } = event.target;
-
-      this.setState((prevState) => ({
-        formData: {
-          ...prevState.formData,
-          [target]: {
-            value,
-            touched: true,
-          },
-        },
-      }));
-    };
-  }
-
   handleFormSubmit(event) {
-    const { onClose, onSignUpSuccess } = this.props;
+    const {
+      onClose,
+      onSignUpSuccess,
+      router,
+      isFormValid,
+      getData,
+    } = this.props;
     event.preventDefault();
 
     this.setState({
@@ -84,12 +42,12 @@ class SignUpModal extends React.Component {
       loading: true,
     });
 
-    if (!this.isFormValid()) {
+    if (!isFormValid()) {
       console.log("There are validation errors");
 
       return;
     }
-    const data = this.getData();
+    const data = getData();
 
     signUp(data)
       .then((res) => {
@@ -104,6 +62,7 @@ class SignUpModal extends React.Component {
       .then((user) => {
         onClose();
         onSignUpSuccess(user);
+        router.push("/dashboard");
       })
       .catch((error) => {
         if (error.status === 409) {
@@ -118,23 +77,16 @@ class SignUpModal extends React.Component {
       });
   }
 
-  isFormValid() {
-    const { formData } = this.state;
-
-    const errorMessages = Object.keys(formData)
-      .map((key) => {
-        const errorMessage = this.getErrorMessage(key);
-
-        return errorMessage;
-      })
-      .filter((v) => !!v);
-
-    return !errorMessages.length;
-  }
-
   render() {
-    const { formData, error, loading } = this.state;
-    const { onClose, onSignIn } = this.props;
+    const { error, loading } = this.state;
+    const {
+      onClose,
+      onSignIn,
+      formData,
+      getErrorMessage,
+      isFormValid,
+      handleFormDataChange,
+    } = this.props;
 
     return (
       <Modal onClose={onClose}>
@@ -152,7 +104,7 @@ class SignUpModal extends React.Component {
 
               const { value, touched } = formData[key];
 
-              const errorMessage = touched ? this.getErrorMessage(key) : "";
+              const errorMessage = touched ? getErrorMessage(key) : "";
 
               return (
                 <FormItem
@@ -166,14 +118,14 @@ class SignUpModal extends React.Component {
                     type={type}
                     error={errorMessage}
                     value={value}
-                    onChange={this.handleFormDataChange(key)}
+                    onChange={handleFormDataChange(key)}
                   />
                 </FormItem>
               );
             })}
             <FormItem>
               <Button
-                disabled={!this.isFormValid() || loading}
+                disabled={!isFormValid() || loading}
                 width="100%"
                 variant="success"
               >
@@ -198,4 +150,6 @@ SignUpModal.propType = {
   onClose: PropTypes.func.isRequired,
   onSignIn: PropTypes.func.isRequired,
 };
-export default SignUpModal;
+const withFormSignUpModal = withForm(form)(SignUpModal);
+const withRouterSignUpModal = withRouter(withFormSignUpModal);
+export default withRouterSignUpModal;
