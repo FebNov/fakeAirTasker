@@ -18,7 +18,7 @@ const withForm = (config) => (Component) => {
       this.state = {
         formData: initFormData(),
       };
-      this.getErrorMessage = this.getData.bind(this);
+      this.getData = this.getData.bind(this);
       this.getErrorMessage = this.getErrorMessage.bind(this);
       this.isFormValid = this.isFormValid.bind(this);
       this.handleFormDataChange = this.handleFormDataChange.bind(this);
@@ -40,7 +40,7 @@ const withForm = (config) => (Component) => {
       const { getErrorMessage } = config[target];
       const { value } = formData[target];
       const data = this.getData();
-      const errorMessage = getErrorMessage(data, value);
+      const errorMessage = getErrorMessage(value, data);
       return errorMessage;
     }
 
@@ -48,7 +48,6 @@ const withForm = (config) => (Component) => {
       return (event) => {
         event.preventDefault();
         const { value } = event.target;
-
         this.setState((prevState) => ({
           formData: {
             ...prevState.formData,
@@ -63,15 +62,12 @@ const withForm = (config) => (Component) => {
 
     isFormValid() {
       const { formData } = this.state;
-
       const errorMessages = Object.keys(formData)
         .map((key) => {
           const errorMessage = this.getErrorMessage(key);
-
           return errorMessage;
         })
         .filter((v) => !!v);
-
       return !errorMessages.length;
     }
     render() {
