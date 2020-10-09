@@ -6,7 +6,7 @@ import SignInModal from "./components/SigninModal";
 import SignUpModal from "./components/SignUpModal";
 import Link from "../../../Link";
 import NakedButton from "../../../NakedButton";
-import { RouterContext } from "../../../Router";
+import { RouterContext, withRouter } from "../../../Router";
 
 const Layout = styled.div`
   display: flex;
@@ -19,9 +19,10 @@ const MODAL = {
 class Private extends React.Component {
   constructor(props) {
     super(props);
+    const user = JSON.parse(localStorage.getItem("user"));
     this.state = {
       showModal: MODAL.empty,
-      user: null,
+      user,
       // showSignInModal: false,
     };
     this.showModal = this.showModal.bind(this);
@@ -41,14 +42,27 @@ class Private extends React.Component {
       });
     };
   }
-
   render() {
     const { showModal, user } = this.state;
+    const { router } = this.props;
     return (
       <>
         <Layout>
           {user ? (
-            <NavigationLink href="/dashboard">DashBoard</NavigationLink>
+            <>
+              <NavigationLink href="/dashboard">DashBoard</NavigationLink>
+              <NavigationLink
+                as={NakedButton}
+                onClick={(event) => {
+                  event.preventDefault();
+                  this.setUser();
+                  localStorage.removeItem("user");
+                  router.push("/");
+                }}
+              >
+                Log Out
+              </NavigationLink>
+            </>
           ) : (
             <>
               <NavigationLink
@@ -88,5 +102,5 @@ class Private extends React.Component {
     );
   }
 }
-
-export default Private;
+const WithRouterPrivate = withRouter(Private);
+export default WithRouterPrivate;

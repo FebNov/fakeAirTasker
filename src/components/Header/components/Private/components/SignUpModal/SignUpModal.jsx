@@ -8,7 +8,7 @@ import Button from "../../../../../Button";
 import FormItem from "../../../../../FormItem";
 import Input from "../../../../../Input";
 import form from "./form";
-import signUp from "../../../../../../apis/signUp";
+import signUp, { error as ERROR } from "../../../../../../apis/signUp";
 import { withRouter } from "../../../../../Router";
 import withForm from "../../../../../withForm";
 const Form = styled.form`
@@ -32,9 +32,10 @@ class SignUpModal extends React.Component {
       onClose,
       onSignUpSuccess,
       router,
-      isFormValid,
       getData,
+      isFormValid,
     } = this.props;
+
     event.preventDefault();
 
     this.setState({
@@ -43,10 +44,9 @@ class SignUpModal extends React.Component {
     });
 
     if (!isFormValid()) {
-      console.log("There are validation errors");
-
       return;
     }
+
     const data = getData();
 
     signUp(data)
@@ -54,9 +54,11 @@ class SignUpModal extends React.Component {
         this.setState({
           loading: false,
         });
+
         if (!res.ok) {
           throw res;
         }
+
         return res.json();
       })
       .then((user) => {
@@ -65,14 +67,14 @@ class SignUpModal extends React.Component {
         router.push("/dashboard");
       })
       .catch((error) => {
-        if (error.status === 409) {
+        if (ERROR[error.status]) {
           this.setState({
-            error: "Email Existed",
+            error: ERROR[error.status],
           });
+
           return;
         }
 
-        this.setState({ error: "Something unexpect happen, try again later" });
         throw error;
       });
   }
@@ -84,8 +86,8 @@ class SignUpModal extends React.Component {
       onSignIn,
       formData,
       getErrorMessage,
-      isFormValid,
       handleFormDataChange,
+      isFormValid,
     } = this.props;
 
     return (
@@ -98,10 +100,8 @@ class SignUpModal extends React.Component {
                 <Alert>{error}</Alert>
               </FormItem>
             )}
-
             {Object.keys(form).map((key) => {
               const { label, type } = form[key];
-
               const { value, touched } = formData[key];
 
               const errorMessage = touched ? getErrorMessage(key) : "";
@@ -145,11 +145,13 @@ class SignUpModal extends React.Component {
   }
 }
 
-SignUpModal.propType = {
+SignUpModal.propTypes = {
   onSignUpSuccess: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSignIn: PropTypes.func.isRequired,
 };
-const withFormSignUpModal = withForm(form)(SignUpModal);
-const withRouterSignUpModal = withRouter(withFormSignUpModal);
-export default withRouterSignUpModal;
+
+const WithFormSignUpModal = withForm(form)(SignUpModal);
+const WithRouterSignUpModal = withRouter(WithFormSignUpModal);
+
+export default WithRouterSignUpModal;
