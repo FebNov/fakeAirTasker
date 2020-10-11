@@ -42,13 +42,13 @@ const SignInModal = (
               return;
             }
             const data = getData();
-            fetch(() => signIn(data), ERROR).then((user) => {
-              onClose();
-              onSignInSuccess(user);
-              localStorage.setItem("user",JSON.stringify(user))
-              router.push("/dashboard");
-            });
-          }}
+            fetch(() => signIn(data), ERROR)
+            .then((user) => {
+            onClose();
+            onSignInSuccess(user);
+            router.push('/dashboard');
+          });
+      }}
         >
           {error && (
             <FormItem>
@@ -79,24 +79,22 @@ const SignInModal = (
             );
           })}
           <FormItem>
-            <Button
-              disabled={!isFormValid() || loading}
-              width="100%"
-              variant="success"
-            >
-              {loading ? "loading" : "Sign In"}
-            </Button>
-          </FormItem>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        Not Member Yet?&nbsp;
-        <NakedButton variant="link" onClick={onSignUp}>
-          Sign Up now
-        </NakedButton>
-      </Modal.Footer>
-    </Modal>
-  );
+          <Button
+            disabled={!isFormValid() || loading}
+            width="100%"
+            variant="success"
+          >
+            Sign in
+          </Button>
+        </FormItem>
+      </Form>
+    </Modal.Body>
+    <Modal.Footer>
+      Not a member yet?&nbsp;
+      <NakedButton variant="link" onClick={onSignUp}>Sign up now</NakedButton>
+    </Modal.Footer>
+  </Modal>
+);
 };
 
 SignInModal.propType = {

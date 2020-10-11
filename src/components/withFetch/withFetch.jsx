@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const withFetch = (Component) => {
   class Wrapper extends React.Component {
@@ -29,9 +29,10 @@ const withFetch = (Component) => {
             throw res;
           }
 
-          const token = res.headers.get("X-Auth-Token");
+          const token = res.headers.get('X-Auth-Token');
+          console.log(res.headers.get("Content"))
           if (token) {
-            localStorage.setItem("token", token);
+            localStorage.setItem('token', token);
           }
 
           return res.json();
@@ -63,6 +64,5 @@ const withFetch = (Component) => {
 
   return Wrapper;
 };
-
 
 export default withFetch;

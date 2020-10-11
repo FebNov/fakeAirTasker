@@ -16,27 +16,32 @@ const Divider = styled.div`
 
 const Public = () => (
   <Layout>
-    <NavigationLink href="/">Logo</NavigationLink>
+    <NavigationLink to="/">
+      LOGO
+    </NavigationLink>
     <Divider />
     <ToggleContent
-      toggle={(toggle) => (
+      toggle={(toggler) => (
         <NavigationButton
           variant="primary"
           href="/post-a-task"
-          onClick={toggle}
+          onClick={toggler}
         >
-          Post a Task
+          Post a task
         </NavigationButton>
       )}
-      content={(toggle) => <PostTaskerModal onClose={toggle} />}
+      content={(toggler) => (
+        <PostTaskerModal onClose={toggler} />
+      )}
     />
     <DropDownList />
-    <NavigationLink indictable href="/browser-task">
-      Browse Tasks
+    <NavigationLink indictable to="/browse-tasks">
+      Browse tasks
     </NavigationLink>
-    <NavigationLink indictable href="/how-it-work">
-      How it Works
+    <NavigationLink indictable to="/how-it-works">
+      How it works
     </NavigationLink>
   </Layout>
 );
+
 export default Public;

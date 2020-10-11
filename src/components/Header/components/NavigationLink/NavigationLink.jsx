@@ -1,10 +1,8 @@
-// import React from "react";
-// import PropTypes from "prop-types";
+
 import styled, { css } from "styled-components";
+import { Link } from '../../../Router';
 
-// import Button from "../../../Button";
-
-const NavigationLink = styled.a`
+const NavigationLink = styled(Link)`
   text-decoration: none;
   color: #545a77;
   margin: 16px;
