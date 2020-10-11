@@ -18,7 +18,7 @@ const Form = styled.form`
 `;
 
 const SignInModal = (
-  onClose,
+{  onClose,
   onSignUp,
   onSignInSuccess,
   formData,
@@ -29,7 +29,7 @@ const SignInModal = (
   router,
   fetch,
   error,
-  loading
+  loading}
 ) => {
   return (
     <Modal onClose={onClose}>
@@ -45,7 +45,7 @@ const SignInModal = (
             fetch(() => signIn(data), ERROR).then((user) => {
               onClose();
               onSignInSuccess(user);
-              localStorage.setItem("user", JSON.stringify(user));
+              localStorage.setItem("user",JSON.stringify(user))
               router.push("/dashboard");
             });
           }}
@@ -56,10 +56,12 @@ const SignInModal = (
             </FormItem>
           )}
           {Object.keys(form).map((key) => {
-            const { label, type } = form[key];
-            const { value, touched } = formData[key];
-            const errorMessage = touched ? getErrorMessage(key) : "";
-            return (
+          const { label, type } = form[key];
+          const { value, touched } = formData[key];
+
+          const errorMessage = touched ? getErrorMessage(key) : '';
+
+          return (
               <FormItem
                 key={key}
                 htmlFor={key}

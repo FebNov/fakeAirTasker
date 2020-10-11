@@ -6,7 +6,7 @@ import SignInModal from "./components/SigninModal";
 import SignUpModal from "./components/SignUpModal";
 import Link from "../../../Link";
 import NakedButton from "../../../NakedButton";
-import { RouterContext, withRouter } from "../../../Router";
+import { withRouter } from "../../../Router";
 
 const Layout = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ const MODAL = {
 class Private extends React.Component {
   constructor(props) {
     super(props);
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"))
     this.state = {
       showModal: MODAL.empty,
       user,

@@ -64,4 +64,5 @@ const withFetch = (Component) => {
   return Wrapper;
 };
 
+
 export default withFetch;

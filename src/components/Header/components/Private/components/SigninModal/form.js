@@ -1,24 +1,25 @@
 const form = {
   email: {
-    label: "Email",
-    type: "text",
+    label: 'Email',
+    type: 'text',
     getErrorMessage: (value) => {
       if (!value) {
-        return "Please enter your email address";
+        return 'Please enter your email address';
       }
-      return "";
+
+      return '';
     },
   },
   password: {
-    key: "password",
-    label: "Password",
-    type: "password",
+    key: 'password',
+    label: 'Password',
+    type: 'password',
     getErrorMessage: (value) => {
       if (!value) {
-        return "Please enter your password";
+        return 'Please enter your password';
       }
 
-      return "";
+      return '';
     },
   },
 };
