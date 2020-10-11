@@ -7,7 +7,7 @@ import styled from "styled-components";
 import Button from "../../../../../Button";
 import FormItem from "../../../../../FormItem";
 import Input from "../../../../../Input";
-import signIn, { error as ERROR } from "../../../../../../apis/signIn";
+import signIn from "../../../../../../apis/signIn";
 import form from "./form";
 import { withRouter } from "../../../../../Router";
 import withForm from "../../../../../withForm";
@@ -16,6 +16,14 @@ import withFetch from "../../../../../withFetch/withFetch";
 const Form = styled.form`
   padding: 16px 0;
 `;
+
+
+const ERROR = {
+  404: "Invalid Email or Password",
+  409:"Invalid Email or Password",
+  500: "Something unexpect happen, try again later",
+};
+
 
 const SignInModal = (
 {  onClose,
@@ -42,7 +50,7 @@ const SignInModal = (
               return;
             }
             const data = getData();
-            fetch(() => signIn(data), ERROR)
+            fetch(() => signIn(data))
             .then((user) => {
             onClose();
             onSignInSuccess(user);
@@ -52,7 +60,7 @@ const SignInModal = (
         >
           {error && (
             <FormItem>
-              <Alert>{error}</Alert>
+              <Alert>{ERROR[error.status]}</Alert>
             </FormItem>
           )}
           {Object.keys(form).map((key) => {
@@ -97,12 +105,37 @@ const SignInModal = (
 );
 };
 
-SignInModal.propType = {
-  onClose: PropTypes.func.isRequired,
-  onSignUp: PropTypes.func.isRequired,
-  onSignInSuccess: PropTypes.func.isRequired,
+
+SignInModal.defaultProps = {
+  error: undefined,
+  loading: false,
 };
-const withFetchSignInModal = withFetch(SignInModal);
-const withFormSignInModal = withForm(form)(withFetchSignInModal);
-const withRouterSignInModal = withRouter(withFormSignInModal);
-export default withRouterSignInModal;
+
+
+SignInModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onSignInSuccess: PropTypes.func.isRequired,
+  onSignUp: PropTypes.func.isRequired,
+  router: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
+  formData: PropTypes.objectOf(PropTypes.shape({
+    value: PropTypes.string,
+    touched: PropTypes.bool,
+  })).isRequired,
+  getData: PropTypes.func.isRequired,
+  getErrorMessage: PropTypes.func.isRequired,
+  handleFormDataChange: PropTypes.func.isRequired,
+  isFormValid: PropTypes.func.isRequired,
+  fetch: PropTypes.func.isRequired,
+  error: PropTypes.shape({
+    status: PropTypes.number,
+  }),
+  loading: PropTypes.bool,
+};
+const EnhancedSignInModal = compose(
+  withForm(form),
+  withRouter,
+  withFetch,
+)(SignInModal);
+export default EnhancedSignInModal;

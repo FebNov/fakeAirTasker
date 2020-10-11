@@ -8,12 +8,18 @@ import Button from "../../../../../Button";
 import FormItem from "../../../../../FormItem";
 import Input from "../../../../../Input";
 import form from "./form";
-import signUp, { error as ERROR } from "../../../../../../apis/signUp";
+import signUp from "../../../../../../apis/signUp";
 import { withRouter } from "../../../../../Router";
 import withForm from "../../../../../withForm";
 const Form = styled.form`
   padding: 16px 0;
 `;
+
+const ERROR = {
+  409: 'Email already exists, please use another one',
+  500: 'Something wrong, please try again',
+};
+
 
 class SignUpModal extends React.Component {
   constructor(props) {
@@ -66,17 +72,6 @@ class SignUpModal extends React.Component {
         onSignUpSuccess(user);
         router.push("/dashboard");
       })
-      .catch((error) => {
-        if (ERROR[error.status]) {
-          this.setState({
-            error: ERROR[error.status],
-          });
-
-          return;
-        }
-
-        throw error;
-      });
   }
 
   render() {
