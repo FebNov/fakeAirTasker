@@ -1,19 +1,19 @@
-import React from "react";
-import Alert from "../../../../../Alert";
-import PropTypes from "prop-types";
-import Modal from "../../../../../Modal";
-import NakedButton from "../../../../../NakedButton";
-import styled from "styled-components";
-import Button from "../../../../../Button";
-import FormItem from "../../../../../FormItem";
-import Input from "../../../../../Input";
-import form from "./form";
-import signUp from "../../../../../../apis/signUp";
-import { withRouter } from "../../../../../Router";
-import withForm from "../../../../../withForm";
-import withFetch from "../../../../../withFetch/withFetch";
-import compose from '../../../../../../utils/compose'
-import withAuthentication from '../../../../../withAuthentication';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from 'styled-components';
+import signUp from '../../../../apis/signUp';
+import compose from '../../../../utils/compose';
+import Alert from '../../../Alert';
+import Button from '../../../Button';
+import FormItem from '../../../FormItem';
+import Input from '../../../Input';
+import Modal from '../../../Modal';
+import NakedButton from '../../../NakedButton';
+import { withRouter } from '../../../Router';
+import withAuthentication from '../../../withAuthentication';
+import withFetch from '../../../withFetch';
+import withForm from '../../../withForm';
+import form from './form'
 const Form = styled.form`
   padding: 16px 0;
 `;

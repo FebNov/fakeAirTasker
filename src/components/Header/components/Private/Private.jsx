@@ -2,45 +2,39 @@ import React from "react";
 import styled from "styled-components";
 import NavigationLink from "../NavigationLink";
 import NavigationButton from "../NavigationButton";
-import SignInModal from "./components/SigninModal";
-import SignUpModal from "./components/SignUpModal";
 import Link from "../../../Link";
 import NakedButton from "../../../NakedButton";
 import { withRouter } from "../../../Router";
 import { AuthenticationContext } from '../../../withAuthentication';
 import Logout from './components/Logout';
+import AuthenticationModals from '../../../AuthenticationModals';
 const Layout = styled.div`
   display: flex;
 `;
-const MODAL = {
-  signIn: "SIGN_IN",
-  signUp: "SIGN_UP",
-  empty: "",
-};
 class Private extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: MODAL.empty,
+      authenticationModal: null,
     };
-    this.showModal = this.showModal.bind(this);
+    this.setAuthenticationModal = this.setAuthenticationModal.bind(this);
   }
   setUser(target) {
     this.setState({ user: target });
   }
-  showModal(target) {
+  setAuthenticationModal(target) {
     return (event) => {
       if (event) {
         event.preventDefault();
       }
 
       this.setState({
-        showModal: target,
+        authenticationModal: target,
       });
     };
   }
   render() {
-    const { showModal } = this.state;
+    const { authenticationModal } = this.state;
     return (
       <>
         <Layout>
@@ -52,33 +46,19 @@ class Private extends React.Component {
               </>
             ) : (
             <>
-              <NavigationLink
-                as={NakedButton}
-                onClick={this.showModal(MODAL.signIn)}
-              >
+            <NavigationLink as={NakedButton} onClick={this.setAuthenticationModal('signIn')}>
                 Sign In
               </NavigationLink>
-              <NavigationLink
-                as={NakedButton}
-                onClick={this.showModal(MODAL.signUp)}
-              >
+              <NavigationLink as={NakedButton} onClick={this.setAuthenticationModal('signUp')}>
                 Sign Up
               </NavigationLink>
-              {showModal === MODAL.signIn && (
-                <SignInModal
-                  onClose={this.showModal(MODAL.empty)}
-                  onSignUp={this.showModal(MODAL.signUp)}
-                 
-                />
-              )}
-              {showModal === MODAL.signUp && (
-                <SignUpModal
-                  onClose={this.showModal(MODAL.empty)}
-                  onSignIn={this.showModal(MODAL.signIn)}
-          
-                />
-              )}
-            </>
+
+              {authenticationModal && (
+                  <AuthenticationModals
+                    initialModal={authenticationModal}
+                    onClose={this.setAuthenticationModal()} />
+                )}
+              </>
           ))};
           </AuthenticationContext.Consumer>
           <NavigationButton as={Link} variant="secondary" href="/enroll">
