@@ -5,6 +5,7 @@ import Home from "./components/pages/Home";
 import Dashboard from "./components/pages/Dashboard";
 import Router, { Route } from "./components/Router";
 import { Authentication } from './components/withAuthentication'
+import Guard from './components/Guard';
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
@@ -26,7 +27,14 @@ const App = () => (
       </HeaderWrapper>
       <ContentWrapper>
         <Route path="/" render={() => <Home />} />
-        <Route path="/dashboard" render={() => <Dashboard />} />
+        <Route
+            path="/dashboard"
+            render={() => (
+              <Guard>
+                <Dashboard />
+              </Guard>
+            )}
+          />
       </ContentWrapper>
       <FooterWrapper>footer</FooterWrapper>
     </Layout>
