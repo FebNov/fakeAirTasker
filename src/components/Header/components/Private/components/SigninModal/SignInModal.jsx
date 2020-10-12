@@ -13,6 +13,7 @@ import { withRouter } from "../../../../../Router";
 import withForm from "../../../../../withForm";
 import withFetch from "../../../../../withFetch/withFetch";
 import compose from '../../../../../../utils/compose'
+import withAuthentication from '../../../../../withAuthentication';
 const Form = styled.form`
   padding: 16px 0;
 `;
@@ -28,7 +29,7 @@ const ERROR = {
 const SignInModal = (
 {  onClose,
   onSignUp,
-  onSignInSuccess,
+  authentication,
   formData,
   getData,
   getErrorMessage,
@@ -52,7 +53,7 @@ const SignInModal = (
             fetch(() => signIn(data))
             .then((user) => {
             onClose();
-            onSignInSuccess(user);
+            authentication.setUser(user);
             router.push('/dashboard');
           });
       }}
@@ -112,7 +113,9 @@ SignInModal.defaultProps = {
 
 SignInModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onSignInSuccess: PropTypes.func.isRequired,
+  authentication: PropTypes.shape({
+    setUser: PropTypes.func,
+  }).isRequired,
   onSignUp: PropTypes.func.isRequired,
   router: PropTypes.shape({
     push: PropTypes.func,
@@ -134,6 +137,6 @@ SignInModal.propTypes = {
 const EnhancedSignInModal = compose(
   withForm(form),
   withRouter,
-  withFetch,
+  withFetch,withAuthentication,
 )(SignInModal);
 export default EnhancedSignInModal;

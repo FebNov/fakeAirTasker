@@ -13,6 +13,7 @@ import { withRouter } from "../../../../../Router";
 import withForm from "../../../../../withForm";
 import withFetch from "../../../../../withFetch/withFetch";
 import compose from '../../../../../../utils/compose'
+import withAuthentication from '../../../../../withAuthentication';
 const Form = styled.form`
   padding: 16px 0;
 `;
@@ -26,7 +27,7 @@ const ERROR = {
 const SignUpModal = ({
   onClose,
   onSignIn,
-  onSignUpSuccess,
+  authentication,
   router,
   formData,
   getData,
@@ -49,7 +50,7 @@ const SignUpModal = ({
           fetch(() => signUp(data))
             .then((user) => {
               onClose();
-              onSignUpSuccess(user);
+              authentication.setUser(user);
               router.push('/dashboard');
             });
         }}
@@ -106,7 +107,9 @@ SignUpModal.defaultProps = {
 };
 
 SignUpModal.propTypes = {
-  onSignUpSuccess: PropTypes.func.isRequired,
+  authentication: PropTypes.shape({
+    setUser: PropTypes.func,
+  }).isRequired,
   onClose: PropTypes.func.isRequired,
   onSignIn: PropTypes.func.isRequired,
   router: PropTypes.shape({
@@ -130,6 +133,6 @@ SignUpModal.propTypes = {
 const EnhancedSignUpModal = compose(
   withForm(form),
   withRouter,
-  withFetch,
+  withFetch, withAuthentication,
 )(SignUpModal);
 export default EnhancedSignUpModal;

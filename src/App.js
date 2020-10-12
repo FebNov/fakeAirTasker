@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Home from "./components/pages/Home";
 import Dashboard from "./components/pages/Dashboard";
 import Router, { Route } from "./components/Router";
+import { Authentication } from './components/withAuthentication'
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
@@ -17,6 +18,7 @@ const ContentWrapper = styled.section`
 const FooterWrapper = styled.section``;
 
 const App = () => (
+  <Authentication>
   <Router>
     <Layout>
       <HeaderWrapper>
@@ -29,6 +31,7 @@ const App = () => (
       <FooterWrapper>footer</FooterWrapper>
     </Layout>
   </Router>
+  </Authentication>
 );
 
 export default App;
