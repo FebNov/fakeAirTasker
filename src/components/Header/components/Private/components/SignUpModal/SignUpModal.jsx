@@ -11,6 +11,8 @@ import form from "./form";
 import signUp from "../../../../../../apis/signUp";
 import { withRouter } from "../../../../../Router";
 import withForm from "../../../../../withForm";
+import withFetch from "../../../../../withFetch/withFetch";
+import compose from '../../../../../../utils/compose'
 const Form = styled.form`
   padding: 16px 0;
 `;
@@ -21,124 +23,85 @@ const ERROR = {
 };
 
 
-class SignUpModal extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      error: null,
-      loading: false,
-    };
-
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-  }
-
-  handleFormSubmit(event) {
-    const {
-      onClose,
-      onSignUpSuccess,
-      router,
-      getData,
-      isFormValid,
-    } = this.props;
-
-    event.preventDefault();
-
-    this.setState({
-      error: null,
-      loading: true,
-    });
-
-    if (!isFormValid()) {
-      return;
-    }
-
-    const data = getData();
-
-    signUp(data)
-      .then((res) => {
-        this.setState({
-          loading: false,
-        });
-
-        if (!res.ok) {
-          throw res;
-        }
-
-        return res.json();
-      })
-      .then((user) => {
-        onClose();
-        onSignUpSuccess(user);
-        router.push("/dashboard");
-      })
-  }
-
-  render() {
-    const { error, loading } = this.state;
-    const {
-      onClose,
-      onSignIn,
-      formData,
-      getErrorMessage,
-      handleFormDataChange,
-      isFormValid,
-    } = this.props;
-
+const SignUpModal= ({
+  onClose,
+  onSignIn,
+  onSignUpSuccess,
+  formData,
+  getData,
+  getErrorMessage,
+  handleFormDataChange,
+  isFormValid,
+  router,
+  fetch,
+  error,
+  loading,})=>{
     return (
-      <Modal onClose={onClose}>
-        <Modal.Header>Sign Up</Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={this.handleFormSubmit}>
-            {error && (
-              <FormItem>
-                <Alert>{error}</Alert>
-              </FormItem>
-            )}
-            {Object.keys(form).map((key) => {
-              const { label, type } = form[key];
-              const { value, touched } = formData[key];
+    <Modal onClose={onClose}>
+    <Modal.Header>Sign Up</Modal.Header>
+    <Modal.Body>
+      <Form o
+      nSubmit={(event)=>{   
+        event.preventDefault();
+          if (!isFormValid()) {
+           return;
+          }
+         const data = getData();
+         fetch(() => signUp(data))
+          .then((user) => {
+          onClose();
+          onSignUpSuccess(user);
+          router.push("/dashboard");
+      });
+    }}
+    >
+        {error && (
+          <FormItem>
+            <Alert>{ERROR[error.status]}</Alert>
+          </FormItem>
+        )}
+        {Object.keys(form).map((key) => {
+          const { label, type } = form[key];
+          const { value, touched } = formData[key];
 
-              const errorMessage = touched ? getErrorMessage(key) : "";
+          const errorMessage = touched ? getErrorMessage(key) : "";
 
-              return (
-                <FormItem
-                  key={key}
-                  htmlFor={key}
-                  label={label}
-                  errorMessage={errorMessage}
-                >
-                  <Input
-                    id={key}
-                    type={type}
-                    error={errorMessage}
-                    value={value}
-                    onChange={handleFormDataChange(key)}
-                  />
-                </FormItem>
-              );
-            })}
-            <FormItem>
-              <Button
-                disabled={!isFormValid() || loading}
-                width="100%"
-                variant="success"
-              >
-                {loading ? "loading" : "Sign up"}
-              </Button>
+          return (
+            <FormItem
+              key={key}
+              htmlFor={key}
+              label={label}
+              errorMessage={errorMessage}
+            >
+              <Input
+                id={key}
+                type={type}
+                error={errorMessage}
+                value={value}
+                onChange={handleFormDataChange(key)}
+              />
             </FormItem>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          Already a member?&nbsp;
-          <NakedButton variant="link" onClick={onSignIn}>
-            Sign in now
-          </NakedButton>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-}
+          );
+        })}
+        <FormItem>
+          <Button
+            disabled={!isFormValid() || loading}
+            width="100%"
+            variant="success"
+          >
+            {loading ? "loading" : "Sign up"}
+          </Button>
+        </FormItem>
+      </Form>
+    </Modal.Body>
+    <Modal.Footer>
+      Already a member?&nbsp;
+      <NakedButton variant="link" onClick={onSignIn}>
+        Sign in now
+      </NakedButton>
+    </Modal.Footer>
+  </Modal>)}
+
 
 SignUpModal.propTypes = {
   onSignUpSuccess: PropTypes.func.isRequired,
@@ -146,7 +109,10 @@ SignUpModal.propTypes = {
   onSignIn: PropTypes.func.isRequired,
 };
 
-const WithFormSignUpModal = withForm(form)(SignUpModal);
-const WithRouterSignUpModal = withRouter(WithFormSignUpModal);
 
-export default WithRouterSignUpModal;
+const EnhancedSignUpModal = compose(
+  withForm(form),
+  withRouter,
+  withFetch,
+)(SignUpModal);
+export default EnhancedSignUpModal;

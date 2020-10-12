@@ -12,7 +12,7 @@ import form from "./form";
 import { withRouter } from "../../../../../Router";
 import withForm from "../../../../../withForm";
 import withFetch from "../../../../../withFetch/withFetch";
-
+import compose from '../../../../../../utils/compose'
 const Form = styled.form`
   padding: 16px 0;
 `;
