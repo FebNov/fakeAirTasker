@@ -7,7 +7,8 @@ import SignUpModal from "./components/SignUpModal";
 import Link from "../../../Link";
 import NakedButton from "../../../NakedButton";
 import { withRouter } from "../../../Router";
-
+// import getAuth from '../../../../apis/getAuth'
+import withFetch from '../../../withFetch';
 const Layout = styled.div`
   display: flex;
 `;
@@ -28,6 +29,13 @@ class Private extends React.Component {
     this.showModal = this.showModal.bind(this);
     this.setUser = this.setUser.bind(this);
   }
+// componentDidMount(){
+//   this.getAuth();
+// }
+//   getAuth(){
+//     const {fetch} = this.props;
+//     fetch(()=>getAuth()).then(this.setUser())
+//   }
   setUser(target) {
     this.setState({ user: target });
   }
@@ -102,5 +110,7 @@ class Private extends React.Component {
     );
   }
 }
-const WithRouterPrivate = withRouter(Private);
+
+const WithFetchPrivate = withFetch(Private)
+const WithRouterPrivate = withRouter(WithFetchPrivate);
 export default WithRouterPrivate;

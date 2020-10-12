@@ -54,6 +54,7 @@ const SignInModal = (
             .then((user) => {
             onClose();
             onSignInSuccess(user);
+            localStorage.setItem('user',JSON.stringify(user))
             router.push('/dashboard');
           });
       }}

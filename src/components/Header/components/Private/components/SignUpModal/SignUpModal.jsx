@@ -40,8 +40,7 @@ const SignUpModal= ({
     <Modal onClose={onClose}>
     <Modal.Header>Sign Up</Modal.Header>
     <Modal.Body>
-      <Form o
-      nSubmit={(event)=>{   
+      <Form onSubmit={(event)=>{   
         event.preventDefault();
           if (!isFormValid()) {
            return;
