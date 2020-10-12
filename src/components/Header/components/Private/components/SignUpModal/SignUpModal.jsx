@@ -23,38 +23,37 @@ const ERROR = {
 };
 
 
-const SignUpModal= ({
+const SignUpModal = ({
   onClose,
   onSignIn,
   onSignUpSuccess,
+  router,
   formData,
   getData,
   getErrorMessage,
   handleFormDataChange,
   isFormValid,
-  router,
   fetch,
   error,
-  loading,})=>{
-    return (
-    <Modal onClose={onClose}>
+  loading,
+}) => (
+  <Modal onClose={onClose}>
     <Modal.Header>Sign Up</Modal.Header>
     <Modal.Body>
-      <Form o
-      nSubmit={(event)=>{   
-        event.preventDefault();
-          if (!isFormValid()) {
-           return;
-          }
-         const data = getData();
-         fetch(() => signUp(data))
-          .then((user) => {
-          onClose();
-          onSignUpSuccess(user);
-          router.push("/dashboard");
-      });
-    }}
-    >
+      <Form
+        onSubmit={(event) => {
+          event.preventDefault();
+
+          const data = getData();
+
+          fetch(() => signUp(data))
+            .then((user) => {
+              onClose();
+              onSignUpSuccess(user);
+              router.push('/dashboard');
+            });
+        }}
+      >
         {error && (
           <FormItem>
             <Alert>{ERROR[error.status]}</Alert>
@@ -64,7 +63,7 @@ const SignUpModal= ({
           const { label, type } = form[key];
           const { value, touched } = formData[key];
 
-          const errorMessage = touched ? getErrorMessage(key) : "";
+          const errorMessage = touched ? getErrorMessage(key) : '';
 
           return (
             <FormItem
@@ -81,7 +80,7 @@ const SignUpModal= ({
                 onChange={handleFormDataChange(key)}
               />
             </FormItem>
-          );
+            );
         })}
         <FormItem>
           <Button
@@ -89,26 +88,44 @@ const SignUpModal= ({
             width="100%"
             variant="success"
           >
-            {loading ? "loading" : "Sign up"}
+            {loading ? 'loading' : 'Sign up'}
           </Button>
         </FormItem>
       </Form>
     </Modal.Body>
     <Modal.Footer>
       Already a member?&nbsp;
-      <NakedButton variant="link" onClick={onSignIn}>
-        Sign in now
-      </NakedButton>
+      <NakedButton variant="link" onClick={onSignIn}>Sign in now</NakedButton>
     </Modal.Footer>
-  </Modal>)}
+  </Modal>
+);
 
+SignUpModal.defaultProps = {
+  error: undefined,
+  loading: false,
+};
 
 SignUpModal.propTypes = {
   onSignUpSuccess: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSignIn: PropTypes.func.isRequired,
+  router: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
+  formData: PropTypes.objectOf(PropTypes.shape({
+    value: PropTypes.string,
+    touched: PropTypes.bool,
+  })).isRequired,
+  getData: PropTypes.func.isRequired,
+  getErrorMessage: PropTypes.func.isRequired,
+  handleFormDataChange: PropTypes.func.isRequired,
+  isFormValid: PropTypes.func.isRequired,
+  fetch: PropTypes.func.isRequired,
+  error: PropTypes.shape({
+    status: PropTypes.number,
+  }),
+  loading: PropTypes.bool,
 };
-
 
 const EnhancedSignUpModal = compose(
   withForm(form),

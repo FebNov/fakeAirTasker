@@ -38,8 +38,7 @@ const SignInModal = (
   fetch,
   error,
   loading}
-) => {
-  return (
+) =>  (
     <Modal onClose={onClose}>
       <Modal.Header>Sign Up</Modal.Header>
       <Modal.Body>
@@ -103,7 +102,6 @@ const SignInModal = (
     </Modal.Footer>
   </Modal>
 );
-};
 
 
 SignInModal.defaultProps = {
