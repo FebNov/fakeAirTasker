@@ -1,18 +1,19 @@
-import React from "react";
-import Alert from "../../../../../Alert";
-import PropTypes from "prop-types";
-import Modal from "../../../../../Modal";
-import NakedButton from "../../../../../NakedButton";
-import styled from "styled-components";
-import Button from "../../../../../Button";
-import FormItem from "../../../../../FormItem";
-import Input from "../../../../../Input";
-import signIn from "../../../../../../apis/signIn";
-import form from "./form";
-import { withRouter } from "../../../../../Router";
-import withForm from "../../../../../withForm";
-import withFetch from "../../../../../withFetch/withFetch";
-import compose from '../../../../../../utils/compose'
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from 'styled-components';
+import signIn from '../../../../apis/signIn';
+import compose from '../../../../utils/compose';
+import Alert from '../../../Alert';
+import Button from '../../../Button';
+import FormItem from '../../../FormItem';
+import Input from '../../../Input';
+import Modal from '../../../Modal';
+import NakedButton from '../../../NakedButton';
+import { withRouter } from '../../../Router';
+import withAuthentication from '../../../withAuthentication';
+import withFetch from '../../../withFetch';
+import withForm from '../../../withForm';
+import form from './form'
 const Form = styled.form`
   padding: 16px 0;
 `;
@@ -28,7 +29,7 @@ const ERROR = {
 const SignInModal = (
 {  onClose,
   onSignUp,
-  onSignInSuccess,
+  authentication,
   formData,
   getData,
   getErrorMessage,
@@ -38,8 +39,7 @@ const SignInModal = (
   fetch,
   error,
   loading}
-) => {
-  return (
+) =>  (
     <Modal onClose={onClose}>
       <Modal.Header>Sign Up</Modal.Header>
       <Modal.Body>
@@ -53,8 +53,7 @@ const SignInModal = (
             fetch(() => signIn(data))
             .then((user) => {
             onClose();
-            onSignInSuccess(user);
-            localStorage.setItem('user',JSON.stringify(user))
+            authentication.setUser(user);
             router.push('/dashboard');
           });
       }}
@@ -104,7 +103,6 @@ const SignInModal = (
     </Modal.Footer>
   </Modal>
 );
-};
 
 
 SignInModal.defaultProps = {
@@ -115,7 +113,9 @@ SignInModal.defaultProps = {
 
 SignInModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onSignInSuccess: PropTypes.func.isRequired,
+  authentication: PropTypes.shape({
+    setUser: PropTypes.func,
+  }).isRequired,
   onSignUp: PropTypes.func.isRequired,
   router: PropTypes.shape({
     push: PropTypes.func,
@@ -137,6 +137,6 @@ SignInModal.propTypes = {
 const EnhancedSignInModal = compose(
   withForm(form),
   withRouter,
-  withFetch,
+  withFetch,withAuthentication,
 )(SignInModal);
 export default EnhancedSignInModal;
